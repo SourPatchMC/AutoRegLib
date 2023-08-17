@@ -1,7 +1,5 @@
 package vazkii.arl.container;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.Container;
@@ -9,6 +7,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ContainerBasic<T extends Container> extends AbstractContainerMenu {
 
@@ -31,11 +30,11 @@ public abstract class ContainerBasic<T extends Container> extends AbstractContai
 	public abstract int addSlots(); 
 
 	@Override
-	public boolean stillValid(@Nonnull Player playerIn) {
+	public boolean stillValid(@NotNull Player playerIn) {
 		return tile.stillValid(playerIn);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack quickMoveStack(Player playerIn, int index) {
 		ItemStack itemstack = ItemStack.EMPTY;

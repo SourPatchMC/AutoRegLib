@@ -12,21 +12,20 @@ package vazkii.arl.util;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 import java.util.List;
 
 public final class TooltipHandler {
 
-	@OnlyIn(Dist.CLIENT)
+	@ClientOnly
 	public static void tooltipIfShift(List<String> tooltip, Runnable r) {
 		if(Screen.hasShiftDown())
 			r.run();
 		else addToTooltip(tooltip, "arl.misc.shift_for_info");
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@ClientOnly
 	public static void addToTooltip(List<String> tooltip, String s, Object... format) {
 		s = I18n.get(s).replaceAll("&", "\u00a7");
 

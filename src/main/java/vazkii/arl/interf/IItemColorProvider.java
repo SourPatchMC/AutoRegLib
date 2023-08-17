@@ -1,12 +1,11 @@
 package vazkii.arl.interf;
 
 import net.minecraft.client.color.item.ItemColor;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 public interface IItemColorProvider {
 
-	@OnlyIn(Dist.CLIENT)
+	@ClientOnly
 	public ItemColor getItemColor();
 
 }

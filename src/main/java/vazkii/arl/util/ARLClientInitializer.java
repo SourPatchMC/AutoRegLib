@@ -1,16 +1,14 @@
 package vazkii.arl.util;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
 import vazkii.arl.AutoRegLib;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = AutoRegLib.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ARLClientInitializer {
+public class ARLClientInitializer implements ClientModInitializer {
 	@SubscribeEvent
 	public static void registerBlockColors(RegisterColorHandlersEvent.Block evt) {
 		RegistryHelper.submitBlockColors(evt.getBlockColors()::register);
+
 	}
 
 	@SubscribeEvent

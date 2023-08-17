@@ -10,8 +10,8 @@
  */
 package vazkii.arl.block.be;
 
-import javax.annotation.Nonnull;
 
+import io.github.fabricators_of_create.porting_lib.util.LazyOptional;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
@@ -22,10 +22,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
+
+import org.jetbrains.annotations.NotNull;
 
 public abstract class SimpleInventoryBlockEntity extends ARLBlockEntity implements WorldlyContainer {
 
@@ -71,13 +69,13 @@ public abstract class SimpleInventoryBlockEntity extends ARLBlockEntity implemen
 		return true;
 	}
 	
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack getItem(int i) {
 		return inventorySlots.get(i);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack removeItem(int i, int j) {
 		if (!inventorySlots.get(i).isEmpty()) {
@@ -102,7 +100,7 @@ public abstract class SimpleInventoryBlockEntity extends ARLBlockEntity implemen
 		return ItemStack.EMPTY;
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack removeItemNoUpdate(int i) {
 		ItemStack stack = getItem(i);
@@ -112,7 +110,7 @@ public abstract class SimpleInventoryBlockEntity extends ARLBlockEntity implemen
 	}
 
 	@Override
-	public void setItem(int i, @Nonnull ItemStack itemstack) {
+	public void setItem(int i, @NotNull ItemStack itemstack) {
 		inventorySlots.set(i, itemstack);
 		inventoryChanged(i);
 	}
@@ -134,31 +132,33 @@ public abstract class SimpleInventoryBlockEntity extends ARLBlockEntity implemen
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull Player entityplayer) {
+	public boolean stillValid(@NotNull Player entityplayer) {
 		return getLevel().getBlockEntity(getBlockPos()) == this && entityplayer.distanceToSqr(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D) <= 64;
 	}
-	
+
+	//Todo: Investigate
+	/*
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
+	public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing) {
 		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return (LazyOptional<T>) LazyOptional.of(() -> new SidedInvWrapper(this, facing));
 		
 		return LazyOptional.empty();
-	}
+	}*/
 
 	@Override
-	public boolean canPlaceItem(int i, @Nonnull ItemStack itemstack) {
+	public boolean canPlaceItem(int i, @NotNull ItemStack itemstack) {
 		return true;
 	}
 
 	@Override
-	public void startOpen(@Nonnull Player player) {
+	public void startOpen(@NotNull Player player) {
 		// NO-OP
 	}
 
 	@Override
-	public void stopOpen(@Nonnull Player player) {
+	public void stopOpen(@NotNull Player player) {
 		// NO-OP
 	}
 
@@ -176,18 +176,18 @@ public abstract class SimpleInventoryBlockEntity extends ARLBlockEntity implemen
 	}
 
 	@Override
-	public boolean canTakeItemThroughFace(int index, @Nonnull ItemStack stack, @Nonnull Direction direction) {
+	public boolean canTakeItemThroughFace(int index, @NotNull ItemStack stack, @NotNull Direction direction) {
 		return isAutomationEnabled();
 	}
 
 	@Override
-	public boolean canPlaceItemThroughFace(int index, @Nonnull ItemStack itemStackIn, @Nonnull Direction direction) {
+	public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack itemStackIn, @NotNull Direction direction) {
 		return isAutomationEnabled();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public int[] getSlotsForFace(@Nonnull Direction side) {
+	public int[] getSlotsForFace(@NotNull Direction side) {
 		if(isAutomationEnabled()) {
 			int[] slots = new int[getContainerSize()];
 			for(int i = 0; i < slots.length; i++)

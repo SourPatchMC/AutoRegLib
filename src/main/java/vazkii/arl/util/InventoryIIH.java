@@ -1,12 +1,12 @@
 package vazkii.arl.util;
 
-import javax.annotation.Nonnull;
 
+import io.github.fabricators_of_create.porting_lib.util.LazyOptional;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.NotNull;
 
 public class InventoryIIH implements IItemHandlerModifiable {
 
@@ -15,7 +15,7 @@ public class InventoryIIH implements IItemHandlerModifiable {
 
 	public InventoryIIH(ItemStack stack) {
 		this.stack = stack;
-		LazyOptional<IItemHandler> opt = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null); 
+		LazyOptional<IItemHandler> opt = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		
 		if(opt.isPresent()) {
 			IItemHandler handler = opt.orElse(null);
@@ -29,7 +29,7 @@ public class InventoryIIH implements IItemHandlerModifiable {
 	}
 
 	@Override
-	public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+	public void setStackInSlot(int slot, @NotNull ItemStack stack) {
 		iih.setStackInSlot(slot, stack);
 	}
 
@@ -38,19 +38,19 @@ public class InventoryIIH implements IItemHandlerModifiable {
 		return iih.getSlots();
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack getStackInSlot(int slot) {
 		return iih.getStackInSlot(slot);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
-	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+	public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
 		return iih.insertItem(slot, stack, simulate);
 	}
 
-	@Nonnull
+	@NotNull
 	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		return iih.extractItem(slot, amount, simulate);

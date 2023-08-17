@@ -28,6 +28,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegisterEvent;
+import org.quiltmc.loader.api.QuiltLoader;
 import vazkii.arl.AutoRegLib;
 import vazkii.arl.interf.IBlockColorProvider;
 import vazkii.arl.interf.IBlockItemProvider;
@@ -42,7 +43,8 @@ public final class RegistryHelper {
 	private static final Queue<Pair<Block, IBlockColorProvider>> blockColors = new ArrayDeque<>();
 
 	private static final Map<Object, ResourceLocation> internalNames = new HashMap<>();
-	
+
+	//todo: What the fuck
 	private static ModData getCurrentModData() {
 		return getModData(ModLoadingContext.get().getActiveNamespace());
 	}
@@ -53,13 +55,14 @@ public final class RegistryHelper {
 			data = new ModData();
 			modData.put(modid, data);
 
+			//todo: How the fuck do we Quiltify this - Siuol
 			FMLJavaModLoadingContext.get().getModEventBus().register(RegistryHelper.class);
 		}
 
 		return data;
 	}
 	
-	public static <T> ResourceLocation getRegistryName(T obj, IForgeRegistry<T> registry) {
+	public static <T> ResourceLocation getRegistryName(T obj, Registry<T> registry) {
 		if(internalNames.containsKey(obj))
 			return getInternalName(obj);
 		
@@ -84,11 +87,11 @@ public final class RegistryHelper {
 	}
 
 	public static void registerBlock(Block block, String resloc, boolean hasBlockItem) {
-		register(block, resloc, ForgeRegistries.BLOCKS);
+		register(block, resloc, Registry.BLOCK);
 
 		if(hasBlockItem) {
 			ModData data = getCurrentModData();
-			data.defers.put(ForgeRegistries.ITEMS.getRegistryName(), () -> data.createItemBlock(block));
+			data.defers.put(Registry.ITEM.key().registry(), () -> data.createItemBlock(block));
 		}
 
 		if(block instanceof IBlockColorProvider)
@@ -96,18 +99,18 @@ public final class RegistryHelper {
 	}
 
 	public static void registerItem(Item item, String resloc) {
-		register(item, resloc, ForgeRegistries.ITEMS);
+		register(item, resloc, Registry.ITEM);
 
 		if(item instanceof IItemColorProvider)
 			itemColors.add(Pair.of(item, (IItemColorProvider) item));
 	}
 	
-	public static <T> void register(T obj, String resloc, IForgeRegistry<T> registry) {
+	public static <T> void register(T obj, String resloc, Registry<T> registry) {
 		if(obj == null)
 			throw new IllegalArgumentException("Can't register null object.");
 
 		setInternalName(obj, GameData.checkPrefix(resloc, false));
-		getCurrentModData().defers.put(registry.getRegistryName(), () -> obj);
+		getCurrentModData().defers.put(registry.key().registry(), () -> obj);
 	}
 
 //	public static <T> void register(T obj, ResourceKey<Registry<T>> registry) {
@@ -142,15 +145,15 @@ public final class RegistryHelper {
 		private ArrayListMultimap<ResourceLocation, Supplier<Object>> defers = ArrayListMultimap.create();
 
 		@SuppressWarnings({ "unchecked" })
-		private <T>  void register(IForgeRegistry<T> registry) {
-			ResourceLocation registryRes = registry.getRegistryName();
+		private <T>  void register(Registry<T> registry) {
+			ResourceLocation registryRes = registry.key().registry();
 
 			if(defers.containsKey(registryRes)) {
 				Collection<Supplier<Object>> ourEntries = defers.get(registryRes);
 				for(Supplier<Object> supplier : ourEntries) {
 					T entry = (T) supplier.get();
 					ResourceLocation name = getInternalName(entry);
-					registry.register(name, entry);
+					Registry.register(registry, name, entry);
 					AutoRegLib.LOGGER.debug("Registering to " + registryRes + " - " + name);
 				}
 
