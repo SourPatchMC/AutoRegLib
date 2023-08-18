@@ -3,7 +3,6 @@
   "quilt_loader": {
     "group": "vazkii.arl",
     "id": "autoreglib",
-    "provides": [],
     "version": "${version}",
     "entrypoints": {
       "init": "vazkii.arl.AutoRegLib",
@@ -12,11 +11,11 @@
     "depends": [
       {
         "id": "quilt_loader",
-        "versions": ">=0.16.0-"
+        "versions": ">=${loader_version}-"
       },
       {
         "id": "minecraft",
-        "versions": ">=1.19.2"
+        "versions": ">=${minecraft_version}"
       },
       {
         "id": "quilted_fabric_api"

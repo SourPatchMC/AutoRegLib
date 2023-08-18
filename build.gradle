@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = project.version
+version = mod_version
 group = maven_group
 archivesBaseName = archives_base_name
 
@@ -29,9 +29,26 @@ dependencies {
     modImplementation(include("io.github.fabricators_of_create.Porting-Lib:networking:${porting_lib_version}"))
 }
 
-project.configurations.all {
+configurations.configureEach {
     exclude(group: "net.fabricmc", module: "fabric-loader")
     exclude(group: "net.fabricmc.fabric-api")
+}
+
+processResources {
+    exclude("**/*.bbmodel", "**/*.lnk")
+
+    Map<String, Object> properties = [
+            "version": version,
+            "minecraft_version": minecraft_version,
+            "loader_version": quilt_loader_version
+    ]
+    properties.forEach((k, v) -> inputs.property(k, v))
+
+    filesMatching("quilt.mod.json") {
+        expand properties
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.WARN
 }
 
 def targetJavaVersion = 17
@@ -61,7 +78,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             artifactId = "$archives_base_name-$minecraft_version"
-            version = "${version}-build.${System.getenv("GITHUB_RUN_NUMBER")}"
+            version = "${mod_version}-build.${System.getenv("GITHUB_RUN_NUMBER")}"
 
             from components.java
         }
