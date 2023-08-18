@@ -21,7 +21,7 @@ public final class ClientTicker {
 
 	public static void init() {
 		ClientTickEvents.START.register(client -> {
-			partialTicks = client.getFrameTime();
+			partialTicks = client.getFrameTime(); // I assume renderTickTime is getFrameTime, but I could be wrong. This may be a problem point.
 		});
 
 		ClientTickEvents.END.register(client -> {
