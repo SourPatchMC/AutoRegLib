@@ -1,14 +1,16 @@
 package vazkii.arl.interf;
 
+import java.util.function.Consumer;
+
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraft.world.level.ItemLike;
 
 public interface ICreativeExtras {
 
-	public default boolean canAddToCreativeTab(CreativeModeTab tab) {
+	default boolean canAddToCreativeTab(CreativeModeTab tab) {
 		return true;
 	}
-	
-	public void addCreativeModeExtras(CreativeModeTab tab, CreativeModeTabEvent.BuildContents event);
-	
+
+	void addCreativeModeExtras(CreativeModeTab tab, Consumer<ItemLike> items);
+
 }

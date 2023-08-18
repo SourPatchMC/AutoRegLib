@@ -1,34 +1,23 @@
 package vazkii.arl.util;
 
 import java.util.ArrayDeque;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.GameData;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegisterEvent;
-import org.quiltmc.loader.api.QuiltLoader;
 import vazkii.arl.AutoRegLib;
 import vazkii.arl.interf.IBlockColorProvider;
 import vazkii.arl.interf.IBlockItemProvider;
@@ -37,29 +26,22 @@ import vazkii.arl.interf.IItemPropertiesFiller;
 
 public final class RegistryHelper {
 
-	private static final Map<String, ModData> modData = new HashMap<>();
+	// Quilt
+	private static ModData data;
 	
 	private static final Queue<Pair<Item, IItemColorProvider>> itemColors = new ArrayDeque<>();
 	private static final Queue<Pair<Block, IBlockColorProvider>> blockColors = new ArrayDeque<>();
 
 	private static final Map<Object, ResourceLocation> internalNames = new HashMap<>();
 
-	//todo: What the fuck
-	private static ModData getCurrentModData() {
-		return getModData(ModLoadingContext.get().getActiveNamespace());
+	// Quilt
+	private static ResourceLocation id(String resloc) {
+		return new ResourceLocation(data.modid, resloc);
 	}
 
-	private static ModData getModData(String modid) {
-		ModData data = modData.get(modid);
-		if(data == null) {
-			data = new ModData();
-			modData.put(modid, data);
-
-			//todo: How the fuck do we Quiltify this - Siuol
-			FMLJavaModLoadingContext.get().getModEventBus().register(RegistryHelper.class);
-		}
-
-		return data;
+	// Quilt
+	public static void setup(String modid) {
+		data = new ModData(modid);
 	}
 	
 	public static <T> ResourceLocation getRegistryName(T obj, Registry<T> registry) {
@@ -76,11 +58,6 @@ public final class RegistryHelper {
 	public static ResourceLocation getInternalName(Object obj) {
 		return internalNames.get(obj);
 	}
-	
-	@SubscribeEvent
-	public static void onRegistryEvent(RegisterEvent event) {
-		getCurrentModData().register(event.getForgeRegistry());
-	}
 
 	public static void registerBlock(Block block, String resloc) {
 		registerBlock(block, resloc, true);
@@ -90,8 +67,7 @@ public final class RegistryHelper {
 		register(block, resloc, Registry.BLOCK);
 
 		if(hasBlockItem) {
-			ModData data = getCurrentModData();
-			data.defers.put(Registry.ITEM.key().registry(), () -> data.createItemBlock(block));
+			data.register(Registry.ITEM, () -> data.createItemBlock(block));
 		}
 
 		if(block instanceof IBlockColorProvider)
@@ -109,18 +85,9 @@ public final class RegistryHelper {
 		if(obj == null)
 			throw new IllegalArgumentException("Can't register null object.");
 
-		setInternalName(obj, GameData.checkPrefix(resloc, false));
-		getCurrentModData().defers.put(registry.key().registry(), () -> obj);
+		setInternalName(obj, id(resloc));
+		data.register(registry, () -> obj);
 	}
-
-//	public static <T> void register(T obj, ResourceKey<Registry<T>> registry) {
-//		if(obj == null)
-//			throw new IllegalArgumentException("Can't register null object.");
-//		if(getInternalName(obj) == null)
-//			throw new IllegalArgumentException("Can't register object without registry name.");
-//
-//		getCurrentModData().defers.put(registry.location(), () -> obj);
-//	}
 
 	public static void setCreativeTab(ItemLike itemlike, CreativeModeTab group) {
 		ResourceLocation res = getInternalName(itemlike);
@@ -140,25 +107,13 @@ public final class RegistryHelper {
 		itemColors.clear();
 	}
 
-	private static class ModData {
+	private static record ModData(String modid) {
 
-		private ArrayListMultimap<ResourceLocation, Supplier<Object>> defers = ArrayListMultimap.create();
-
-		@SuppressWarnings({ "unchecked" })
-		private <T>  void register(Registry<T> registry) {
-			ResourceLocation registryRes = registry.key().registry();
-
-			if(defers.containsKey(registryRes)) {
-				Collection<Supplier<Object>> ourEntries = defers.get(registryRes);
-				for(Supplier<Object> supplier : ourEntries) {
-					T entry = (T) supplier.get();
-					ResourceLocation name = getInternalName(entry);
-					Registry.register(registry, name, entry);
-					AutoRegLib.LOGGER.debug("Registering to " + registryRes + " - " + name);
-				}
-
-				defers.removeAll(registryRes);
-			}
+		private <T> void register(Registry<T> registry, Supplier<T> supplier) {
+			T entry = (T) supplier.get();
+			ResourceLocation name = getInternalName(entry);
+			Registry.register(registry, name, entry);
+			AutoRegLib.LOGGER.debug("Registering to " + registry.key().registry() + " - " + name);;
 		}
 
 		private Item createItemBlock(Block block) {

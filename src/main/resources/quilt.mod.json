@@ -35,7 +35,8 @@
       "description": "Automatically item, block, and model registration for mods. Ported to Quilt",
       "contributors": {
         "Vazkii": "Original Developer",
-        "Siuolplex": "Quilt Porter"
+        "Siuolplex": "Quilt Porter",
+        "Maximum": "Quilt Porter"
       },
       "license": "WTFPL",
       "icon": "logo.png"
