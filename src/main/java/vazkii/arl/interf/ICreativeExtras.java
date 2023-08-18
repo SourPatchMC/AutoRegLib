@@ -3,7 +3,7 @@ package vazkii.arl.interf;
 import java.util.function.Consumer;
 
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.ItemStack;
 
 public interface ICreativeExtras {
 
@@ -11,6 +11,6 @@ public interface ICreativeExtras {
 		return true;
 	}
 
-	void addCreativeModeExtras(CreativeModeTab tab, Consumer<ItemLike> items);
+	void addCreativeModeExtras(CreativeModeTab tab, Consumer<ItemStack> items);
 
 }

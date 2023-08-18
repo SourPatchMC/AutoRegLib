@@ -42,5 +42,8 @@
       "icon": "logo.png"
     },
     "intermediate_mappings": "net.fabricmc:intermediary"
-  }
+  },
+  "mixin": [
+    "arl.mixins.json"
+  ]
 }
