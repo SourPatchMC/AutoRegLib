@@ -71,3 +71,40 @@ jar {
         rename { "${it}_${archivesBaseName}"}
     }
 }
+
+task buildOrPublish {
+    group = "build"
+    String mavenUser = System.getenv().MAVEN_USER
+    if (mavenUser != null && !mavenUser.isEmpty()) {
+        dependsOn(tasks.getByName("publish"))
+        println("prepared for publish")
+    } else {
+        dependsOn(tasks.getByName("build"))
+        println("prepared for build")
+    }
+}
+
+// configure the maven publication
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.maven_group
+            artifactId = project.archives_base_name
+            version = "${project.mod_version}-rev.${grgit.head().abbreviatedId}"
+
+            from components.java
+        }
+    }
+
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    repositories {
+        maven {
+            url = "https://mvn.devos.one/${System.getenv().PUBLISH_SUFFIX}/"
+            credentials {
+                username = System.getenv().MAVEN_USER
+                password = System.getenv().MAVEN_PASS
+            }
+            authentication { basic(BasicAuthentication) }
+        }
+    }
+}
