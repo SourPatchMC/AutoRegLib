@@ -16,12 +16,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.network.NetworkEvent;
+import vazkii.arl.quilt.NetworkContext;
 
 public abstract class BlockEntityMessage<T extends BlockEntity> implements IMessage {
 
-	private static final long serialVersionUID = 4703277631856386752L;
-	
 	public BlockPos pos;
 	public ResourceLocation typeExpected;
 	
@@ -31,20 +29,18 @@ public abstract class BlockEntityMessage<T extends BlockEntity> implements IMess
 		this.pos = pos;
 		typeExpected = Registry.BLOCK_ENTITY_TYPE.getKey(type);
 	}
-	
+
 	@SuppressWarnings({ "deprecation", "unchecked" })
 	@Override
-	public final boolean receive(NetworkEvent.Context context) {
-		ServerLevel world = context.getSender().getLevel();
+	public final void receive(NetworkContext context) {
+		ServerLevel world = context.sender().getLevel();
 		if(world.hasChunkAt(pos)) {
 			BlockEntity tile = world.getBlockEntity(pos);
 			if(tile != null && Registry.BLOCK_ENTITY_TYPE.getKey(tile.getType()).equals(typeExpected))
 				context.enqueueWork(() -> receive((T) tile, context));
 		}
-		
-		return true;
 	}
 
-	public abstract void receive(T tile, NetworkEvent.Context context);
+	public abstract void receive(T tile, NetworkContext context);
 
 }
