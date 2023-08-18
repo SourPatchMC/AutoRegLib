@@ -2,7 +2,7 @@ plugins {
     id 'org.quiltmc.loom' version '1.+'
     id 'maven-publish'
 }
-version = mod_version
+version = version
 group = maven_group
 archivesBaseName = archives_base_name
 
@@ -25,7 +25,7 @@ dependencies {
 
     modImplementation "org.quiltmc:quilt-loader:${quilt_loader_version}"
 
-    modImplementation "org.quiltmc:qsl:${qsl_version}+${minecraft_version}"
+    modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${qfapi_version}-${minecraft_version}"
 
     modImplementation(include("io.github.fabricators_of_create.Porting-Lib:Porting-Lib:${porting_lib_version}"))
 

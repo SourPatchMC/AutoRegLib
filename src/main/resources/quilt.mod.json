@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "vazkii.arl",
+    "id": "autoreglib",
+    "provides": [],
+    "version": "${version}",
+    "entrypoints": {
+      "init": "vazkii.arl.AutoRegLib",
+      "client_init": "vazkii.arl.util.ARLClientInitializer"
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": ">=0.16.0-"
+      },
+      {
+        "id": "minecraft",
+        "versions": ">=1.19.2"
+      },
+      {
+        "id": "quilted_fabric_api",
+        "versions": "*"
+      }
+    ],
+    "breaks": [
+      {
+        "id": "fabric",
+        "reason": "ARL is a Quilt Mod, and as such requires Quilted Fabric API, please use that.",
+        "unless": "quilted_fabric_api"
+      }
+    ],
+    "metadata": {
+      "name": "AutoRegLib",
+      "description": "Automatically item, block, and model registration for mods. Ported to Quilt",
+      "contributors": {
+        "Vazkii": "Original Developer",
+        "Siuolplex": "Quilt Porter"
+      },
+      "license": "WTFPL",
+      "icon": "logo.png"
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary"
+  }
+}

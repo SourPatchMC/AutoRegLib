@@ -6,7 +6,7 @@ As this library is composite of classes from multiple classes from other mods of
 * [Botania License](http://botaniamod.net/license.php)
 * [Psi License](http://psi.vazkii.us/license.php)
 * [Quark License](https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_GB)
-* [AutoRegLib classes License](http://www.wtfpl.net/)
+* [AutoRegLib classes License](http://ww w.wtfpl.net/)
 
 ## Maven
 
