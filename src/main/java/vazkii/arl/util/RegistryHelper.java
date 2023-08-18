@@ -25,7 +25,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegisterEvent;
 import org.quiltmc.loader.api.QuiltLoader;
@@ -109,7 +108,7 @@ public final class RegistryHelper {
 		if(obj == null)
 			throw new IllegalArgumentException("Can't register null object.");
 
-		setInternalName(obj, GameData.checkPrefix(resloc, false));
+		setInternalName(obj, new ResourceLocation(resloc));
 		getCurrentModData().defers.put(registry.key().registry(), () -> obj);
 	}
 

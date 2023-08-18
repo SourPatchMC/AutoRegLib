@@ -17,5 +17,6 @@ public class ARLClientInitializer implements ClientModInitializer {
 	public void onInitializeClient(ModContainer mod) {
 		registerBlockColors();
 		registerItemColors();
+		ClientTicker.init();
 	}
 }
