@@ -2,7 +2,7 @@ plugins {
     id 'org.quiltmc.loom' version '1.+'
     id 'maven-publish'
 }
-version = version
+version = project.version
 group = maven_group
 archivesBaseName = archives_base_name
 
@@ -90,7 +90,7 @@ publishing {
         maven(MavenPublication) {
             groupId = project.maven_group
             artifactId = project.archives_base_name
-            version = "${project.mod_version}-rev.${grgit.head().abbreviatedId}"
+            version = "${version}-rev.${grgit.head().abbreviatedId}"
 
             from components.java
         }
