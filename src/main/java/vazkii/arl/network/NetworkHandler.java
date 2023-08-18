@@ -10,15 +10,13 @@
  */
 package vazkii.arl.network;
 
-import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import io.github.fabricators_of_create.porting_lib.util.NetworkDirection;
+import me.pepperbell.simplenetworking.SimpleChannel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-
 
 public class NetworkHandler {
 	
@@ -26,24 +24,15 @@ public class NetworkHandler {
 	
 	private int i = 0;
 	
-	public NetworkHandler(String modid, int protocol) {
-		this(modid, "main", protocol);
+	public NetworkHandler(String modid) {
+		this(modid, "main");
 	}
 	
-	public NetworkHandler(String modid, String channelName, int protocol) {
-		String protocolStr = Integer.toString(protocol);
-		
-		channel = NetworkRegistry.ChannelBuilder
-				.named(new ResourceLocation(modid, channelName))
-				.networkProtocolVersion(() -> protocolStr)
-				.clientAcceptedVersions(protocolStr::equals)
-				.serverAcceptedVersions(protocolStr::equals)
-				.simpleChannel();
+	public NetworkHandler(String modid, String channelName) {
+		this.channel = new SimpleChannel(new ResourceLocation(modid, channelName));
 	}
 	
 	public <T extends IMessage> void register(Class<T> clazz, NetworkDirection dir) {
-		BiConsumer<T, FriendlyByteBuf> encoder = MessageSerializer::writeObject;
-		
 		Function<FriendlyByteBuf, T> decoder = (buf) -> {
 			try {
 				T msg = clazz.getDeclaredConstructor().newInstance();
@@ -53,21 +42,21 @@ public class NetworkHandler {
 				throw new RuntimeException(e);
 			} 
 		};
-		
-		BiConsumer<T, Supplier<NetworkEvent.Context>> consumer = (msg, supp) -> {
-			NetworkEvent.Context context = supp.get();
-			if(context.getDirection() != dir)
-				return;
-			
-			context.setPacketHandled(msg.receive(context));
-		};
-		
-		channel.registerMessage(i, clazz, encoder, decoder, consumer);
+
+		switch (dir) {
+			case PLAY_TO_CLIENT:
+				channel.registerS2CPacket(clazz, i, decoder);
+				break;
+			case PLAY_TO_SERVER:
+				channel.registerC2SPacket(clazz, i, decoder);
+				break;
+		}
+
 		i++;
 	}
 
 	public void sendToPlayer(IMessage msg, ServerPlayer player) {
-		channel.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+		channel.sendToClient(msg, player);
 	}
 	
 	public void sendToServer(IMessage msg) {
