@@ -19,11 +19,10 @@
         "versions": ">=1.19.2"
       },
       {
-        "id": "quilted_fabric_api",
-        "versions": "*"
+        "id": "quilted_fabric_api"
       },
       {
-        "id": "porting_lib"
+        "id": "porting_lib_networking"
       }
     ],
     "breaks": [
