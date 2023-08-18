@@ -34,7 +34,7 @@
     ],
     "metadata": {
       "name": "AutoRegLib",
-      "description": "Automatically item, block, and model registration for mods. Ported to Quilt",
+      "description": "Automatic item, block, and model registration for mods. Ported to Quilt",
       "contributors": {
         "Vazkii": "Original Developer",
         "Siuolplex": "Quilt Porter",
