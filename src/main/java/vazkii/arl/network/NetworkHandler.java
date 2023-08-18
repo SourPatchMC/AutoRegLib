@@ -12,11 +12,11 @@ package vazkii.arl.network;
 
 import java.util.function.Function;
 
-import io.github.fabricators_of_create.porting_lib.util.NetworkDirection;
 import me.pepperbell.simplenetworking.SimpleChannel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import vazkii.arl.util.NetworkDirection;
 
 public class NetworkHandler {
 	

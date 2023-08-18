@@ -11,7 +11,6 @@
 package vazkii.arl.block.be;
 
 
-import io.github.fabricators_of_create.porting_lib.util.LazyOptional;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;

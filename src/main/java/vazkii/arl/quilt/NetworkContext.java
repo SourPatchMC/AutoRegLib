@@ -2,10 +2,10 @@ package vazkii.arl.quilt;
 
 import java.util.concurrent.Executor;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
-import io.github.fabricators_of_create.porting_lib.util.NetworkDirection;
 import net.minecraft.server.level.ServerPlayer;
+import vazkii.arl.util.NetworkDirection;
 
 public record NetworkContext(Executor executor, @Nullable ServerPlayer sender) {
 	public void enqueueWork(Runnable runnable) {

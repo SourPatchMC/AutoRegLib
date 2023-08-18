@@ -12,8 +12,6 @@ repositories {
     maven { url = 'https://maven.parchmentmc.org' } // Parchment Mappings
     maven { url = "https://mvn.devos.one/snapshots/" } // Porting Lib
     maven { url = "https://jitpack.io/" } // Mixin Extras
-    maven { url = "https://maven.terraformersmc.com/" } // EMI
-    maven { url = 'https://maven.minecraftforge.net/' } // TerraBlender
 }
 
 dependencies {
@@ -28,27 +26,13 @@ dependencies {
 
     modImplementation "org.quiltmc.quilted-fabric-api:quilted-fabric-api:${qfapi_version}-${minecraft_version}"
 
-    modImplementation(include("io.github.fabricators_of_create.Porting-Lib:Porting-Lib:${porting_lib_version}"))
-
+    modImplementation(include("io.github.fabricators_of_create.Porting-Lib:networking:${porting_lib_version}"))
 }
 
-//processResources {
-//    exclude("**/*.bbmodel", "**/*.lnk")
-//
-//    Map<String, Object> properties = [
-//            "version": version,
-//            "minecraft_version": minecraft_version,
-//            "loader_version": loader_version,
-//            "fabric_version": fabric_version,
-//    ]
-//    properties.forEach((k, v) -> inputs.property(k, v))
-//
-//    filesMatching("fabric.mod.json") {
-//        expand properties
-//    }
-//
-//    duplicatesStrategy = DuplicatesStrategy.WARN
-//}
+project.configurations.all {
+    exclude(group: "net.fabricmc", module: "fabric-loader")
+    exclude(group: "net.fabricmc.fabric-api")
+}
 
 def targetJavaVersion = 17
 tasks.withType(JavaCompile).configureEach {
